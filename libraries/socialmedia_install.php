@@ -35,7 +35,7 @@ class Socialmedia_Install {
         $table_prefix = Kohana::config('database.default.table_prefix');
 		$this->db->query("
                     CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "` (
-                      `id` INT NOT NULL ,
+                      `id` int(11) NOT NULL AUTO_INCREMENT,
                       `channel` VARCHAR(20) NOT NULL COMMENT 'Should be set by plugin, denotes where message came from' ,
                       `channel_id` VARCHAR(255) NOT NULL COMMENT 'Message ID on channel' ,
                       `message` TEXT NOT NULL COMMENT 'Body of message' ,
@@ -44,9 +44,18 @@ class Socialmedia_Install {
                       `latitude` DECIMAL(10,8) NULL ,
                       `longitude` DECIMAL(11,8) NULL ,
                       `status` INT NOT NULL COMMENT 'Current status of message' ,
+                      `priority` int(11) NOT NULL DEFAULT '0',
                       PRIMARY KEY (`id`) )
                     DEFAULT CHARACTER SET = utf8
                     COMMENT = 'Holds all socialmedia info crawled by subplugins'");
+
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_settings` (
+					id int(11) unsigned NOT NULL AUTO_INCREMENT,
+					setting varchar(40) DEFAULT NULL,
+					value varchar(400) DEFAULT NULL,
+					PRIMARY KEY (`id`),
+					UNIQUE KEY `setting_UNIQUE` (`setting`)
+				);");
 
 			// Add crawler in to scheduler table
 			$this->db->query("INSERT IGNORE INTO `" . $table_prefix . "scheduler`
@@ -63,6 +72,11 @@ class Socialmedia_Install {
 		$this->db->query("
 			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "`;
 			");
+
+		$this->db->query("
+			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "_settings`;
+			");
+
 
 		$this->db->query("
 			DELETE FROM  `".Kohana::config('database.default.table_prefix') . "sheduler`
