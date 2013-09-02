@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /**
  * Performs install/uninstall methods for the Social Media plugin
  *
@@ -14,7 +14,7 @@
  */
 
 
-class My_plugin_name_Install {
+class Socialmedia_Install {
     const TABLE_NAME = "socialmedia";
 
 	/**
@@ -34,7 +34,7 @@ class My_plugin_name_Install {
 		// Include the table_prefix
         $table_prefix = Kohana::config('database.default.table_prefix');
 		$this->db->query("
-                    CREATE  TABLE `" . $table_prefix . self::TABLE_NAME . "` (
+                    CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "` (
                       `id` INT NOT NULL ,
                       `channel` VARCHAR(20) NOT NULL COMMENT 'Should be set by plugin, denotes where message came from' ,
                       `channel_id` VARCHAR(255) NOT NULL COMMENT 'Message ID on channel' ,
@@ -48,7 +48,12 @@ class My_plugin_name_Install {
                     DEFAULT CHARACTER SET = utf8
                     COMMENT = 'Holds all socialmedia info crawled by subplugins'");
 
+			// Add crawler in to scheduler table
+			$this->db->query("INSERT IGNORE INTO `" . $table_prefix . "scheduler`
+				(`scheduler_name`,`scheduler_last`,`scheduler_weekday`,`scheduler_day`,`scheduler_hour`,`scheduler_minute`,`scheduler_controller`,`scheduler_active`) VALUES
+				('Ushahidi-SocialMedia','0','-1','-1','-1','-1','s_socialmedia','1')");
 	}
+
 
 	/**
 	 * Deletes the database tables for my_plugin_name
@@ -56,7 +61,14 @@ class My_plugin_name_Install {
 	public function uninstall()
 	{
 		$this->db->query("
-			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME "`;
+			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "`;
 			");
+
+		$this->db->query("
+			DELETE FROM  `".Kohana::config('database.default.table_prefix') . "sheduler`
+			WHERE
+			scheduler_controller = `s_socialmedia`;
+			");
+
 	}
 }
