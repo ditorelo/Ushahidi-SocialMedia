@@ -28,8 +28,8 @@ class S_Socialmedia_Controller extends Controller {
 			"keywords"	=> array("new zealand", "nz"),
 			"location"	=> null,
 			"since_id"	=> null,
-			"count"		=> 100,
-			"hokey"		=> "pokey"  //just tricking dispatch to pass this array using php's native function
+			null,
+			null  //just tricking dispatch to pass this array using php's native function
 			);
 
 		if ($dispatch instanceof Dispatch && method_exists($dispatch,'method'))
