@@ -1,6 +1,6 @@
 <?php
 /**
- * API settings view page.
+ * Social Media settings view page.
  *
  * PHP version 5
  * LICENSE: This source file is subject to LGPL license 
@@ -28,8 +28,7 @@
 					<!-- tab -->
 					<div class="tab">
 						<ul>
-							<li><a href="#" onclick="apiSettingsAction('s', 'SAVE');"><?php echo utf8::strtoupper(Kohana::lang('ui_admin.save_settings')); ?></a></li>
-							<li><a href="#" onclick-"apiSettingsAction('c', 'CANCEL');"><?php echo utf8::strtoupper(Kohana::lang('ui_admin.cancel')); ?></a></li>
+							<li><a href="#" onclick="socialMediaSettingsAction('s', 'SAVE');"><?php echo utf8::strtoupper(Kohana::lang('ui_admin.save_settings')); ?></a></li>
 						</ul>
 					</div>
 					<!-- /tab -->
@@ -67,27 +66,26 @@
 					<div class="l-column">
 						<div class="row">
 							<h4><?php echo Kohana::lang('socialmedia.settings.start_date'); ?></h4>
-							<?php print form::input('start_date', $form['start_date'], ' class="text"'); ?>
+							<?php print form::input('start_date', $start_date, ' class="text"'); ?>
 						</div>
 					</div>
                     <div class="r-column">
-
                                 <h4><?php echo Kohana::lang('socialmedia.settings.map_radius'); ?></h4>
                                 <p><?php echo Kohana::lang('socialmedia.settings.map_radius_explanation'); ?></p>
 
-                                <label><?php print form::checkbox('enable_location', $form['enable_location']); ?> <?php echo Kohana::lang('socialmedia.settings.enable_location'); ?></label>
+                                <label><?php print form::checkbox('enable_location', '1', !empty($enable_location)); ?> <?php echo Kohana::lang('socialmedia.settings.enable_location'); ?></label>
 
-                                <div class="location-info" style='float:none; padding: 10px 0 0 0; height:30px;'>
+                                <div class="location-info" style='width: 100%; float:none; padding: 10px 0 0 0; height:30px;'>
                                     <span><?php echo Kohana::lang('ui_main.latitude');?>:</span>
-                                    <?php print form::input('default_lat', $form['default_lat'], ' readonly="readonly" class="text"'); ?>
+                                    <?php print form::input('latitude', $latitude, ' readonly="readonly" class="text"'); ?>
                                     <span><?php echo Kohana::lang('ui_main.longitude');?>:</span>
-                                    <?php print form::input('default_lon', $form['default_lon'], ' readonly="readonly" class="text"'); ?>
+                                    <?php print form::input('longitude', $longitude, ' readonly="readonly" class="text"'); ?>
                                     <span><?php echo Kohana::lang('socialmedia.settings.radius_label');?>:</span>
-                                    <?php print form::dropdown('radius', $radius_options, $form["radius"]); ?>
+                                    <?php print form::dropdown('radius', $radius_options, $radius, "style='width:100px'"); ?>
                                 </div>
 
                             <div id="map_holder">
-                                <div id="map" class="mapstraction"></div>    
+                                <div id="socialmedia-map" class="mapstraction"></div>
                             </div>
                             <div style="margin-top:25px" id="map_loaded"></div>
                         </div>

@@ -57,6 +57,13 @@ class Socialmedia_Install {
 					UNIQUE KEY `setting_UNIQUE` (`setting`)
 				);");
 
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_keywords` (
+					id int(11) unsigned NOT NULL AUTO_INCREMENT,
+					keyword varchar(40) DEFAULT NULL,
+					disabled boolean,
+					PRIMARY KEY (`id`)
+				);");
+
 			// Add crawler in to scheduler table
 			$this->db->query("INSERT IGNORE INTO `" . $table_prefix . "scheduler`
 				(`scheduler_name`,`scheduler_last`,`scheduler_weekday`,`scheduler_day`,`scheduler_hour`,`scheduler_minute`,`scheduler_controller`,`scheduler_active`) VALUES
@@ -77,6 +84,10 @@ class Socialmedia_Install {
 			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "_settings`;
 			");
 
+
+		$this->db->query("
+			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "_keywords`;
+			");
 
 		$this->db->query("
 			DELETE FROM  `".Kohana::config('database.default.table_prefix') . "sheduler`
