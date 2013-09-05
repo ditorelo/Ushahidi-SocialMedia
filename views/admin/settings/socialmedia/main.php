@@ -17,6 +17,8 @@
 				<h2>
 					<?php admin::settings_subtabs("socialmedia"); ?>
 				</h2>
+				<?php print form::open(NULL, array('id' => 'SocialMediaSettings', 'name' => 'SocialMediaSettings')); ?>
+
 				<!-- tabs -->
 				<div class="tabs">
 					<!-- tabset -->
@@ -28,15 +30,14 @@
 					<!-- tab -->
 					<div class="tab">
 						<ul>
-							<li><a href="#" onclick="socialMediaSettingsAction('s', 'SAVE');"><?php echo utf8::strtoupper(Kohana::lang('ui_admin.save_settings')); ?></a></li>
+							<li><input style="margin:0;" type="submit" class="save-rep-btn" value="<?php echo Kohana::lang('ui_admin.save_settings');?>" /></li>
 						</ul>
 					</div>
 					<!-- /tab -->
 				</div>
 				<!-- /tabs -->
 
-				<?php print form::open(NULL, array('id' => 'SocialMediaSettings', 'name' => 'SocialMediaSettings')); ?>
-				<input type="hidden" name="action" id="action" value="" />
+				<input type="hidden" name="action" id="action" value="s" />
 
 				<div class="report-form">
 
@@ -67,6 +68,8 @@
 						<div class="row">
 							<h4><?php echo Kohana::lang('socialmedia.settings.start_date'); ?></h4>
 							<?php print form::input('start_date', $start_date, ' class="text"'); ?>
+							<div style="clear:both"></div>
+							<p><?php echo Kohana::lang('socialmedia.settings.start_date_explanation'); ?></p>
 						</div>
 					</div>
                     <div class="r-column">

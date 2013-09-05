@@ -32,12 +32,7 @@ class socialmedia {
 		if (Router::$controller == 'settings' or Router::$controller == 'socialmedia')
 		{
 			Event::add('ushahidi_action.nav_admin_settings', array($this, '_socialmedia'));
-		}/*
-		elseif (strripos(Router::$current_uri, "main") !== false)
-		{
-			Event::add('ushahidi_action.header_scripts', array($this, 'sharing_js'));
-			Event::add('ushahidi_action.main_sidebar', array($this, 'sharing_bar'));
-		}*/
+		}
 	}
 
 	public function _socialmedia()
@@ -45,34 +40,6 @@ class socialmedia {
 		$this_sub_page = Event::$data;
 		echo ($this_sub_page == "socialmedia") ? "SocialMedia" : "<a href=\"".url::site()."admin/settings/socialmedia\">SocialMedia</a>";
 	}
-
-	/**
-	 * Loads the sharing bar on the side bar on the main page
-	 */
-/*	public function sharing_bar()
-	{
-		// Get all active Shares
-		$shares = array();
-		foreach (ORM::factory('sharing')
-					->where('sharing_active', 1)
-					->find_all() as $share)
-		{
-			$shares[$share->id] = array($share->sharing_name, $share->sharing_color);
-		}
-
-		$sharing_bar = View::factory('sharing/sharing_bar');
-
-		$sharing_bar->shares = $shares;
-		$sharing_bar->render(TRUE);
-	}
-	
-	/**
-	 * Loads the JavaScript for the sharing sidebar
-	 */
-	/*public function sharing_js()
-	{
-		$js = View::factory('js/sharing_bar_js');
-		$js->render(TRUE);
-	}*/
 }
+
 new socialmedia;

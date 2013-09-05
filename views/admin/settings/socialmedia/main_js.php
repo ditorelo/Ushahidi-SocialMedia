@@ -155,10 +155,3 @@ $(document).ready(function() {
 
 	showMap();
 });
-
-
-function socialMediaSettingsAction(action, confirmAction)
-{
-        $("#action").attr("value", action);
-        $("#SocialMediaSettings").submit();
-}

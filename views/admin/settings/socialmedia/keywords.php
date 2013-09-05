@@ -21,17 +21,9 @@
 				<div class="tabs">
 					<!-- tabset -->
 					<ul class="tabset">
-						<?php SocialMedia_Controller::subtabs("main"); ?>
+						<?php SocialMedia_Controller::subtabs("keywords"); ?>
 					</ul>
 					<!-- /tabset -->
-
-					<!-- tab -->
-					<div class="tab">
-						<ul>
-							<li><a href="#" onclick="socialMediaSettingsAction('s', 'SAVE');"><?php echo utf8::strtoupper(Kohana::lang('ui_admin.save_settings')); ?></a></li>
-						</ul>
-					</div>
-					<!-- /tab -->
 				</div>
 				<!-- /tabs -->
 
@@ -66,7 +58,7 @@
 									<thead>
 										<tr>
 											<th class="col-1">&nbsp;</th>
-											<th class="col-2"><?php echo Kohana::lang('socialmedia.keyword');?></th>
+											<th class="col-2"><?php echo Kohana::lang('ui_admin.keywords');?></th>
 											<th class="col-4"><?php echo Kohana::lang('ui_main.actions');?></th>
 										</tr>
 									</thead>
@@ -85,11 +77,10 @@
 											<tr>
 												<td class="col-1">&nbsp;</td>
 												<td class="col-2">
-													<?php echo $item->keyword; ?>
+													<?php echo $item->keyword; ?><?php echo $item->disabled ? " (" . utf8::strtolower(Kohana::lang('ui_main.disabled')) . ")" : null ?>
 												</td>
 												<td class="col-4">
 													<ul>
-														<li class="none-separator"><?php echo $item->disabled ? Kohana::lang('socialmedia.disabled') : null ?></li>
 														<li class="none-separator"><a href="#add" onClick="fillFields('<?php echo(rawurlencode($item->id)); ?>' ,'<?php echo(rawurlencode($item->keyword)); ?>','<?php echo(rawurlencode($item->disabled)); ?>')"><?php echo Kohana::lang('ui_main.edit');?></a></li>
 														<li><a href="javascript:keywordAction('d','DELETE','<?php echo(rawurlencode($item->id)); ?>')" class="del"><?php echo Kohana::lang('ui_main.delete');?></a></li>
 													</ul>
@@ -117,11 +108,11 @@
 							<input type="hidden" id="keyword_id"  name="keyword_id" value="" />
 							<input type="hidden" name="action" id="action" value="a"/>
 							<div class="tab_form_item">
-								<strong><?php echo Kohana::lang('socialmedia.keyword');?>:</strong><br />
+								<strong><?php echo Kohana::lang('ui_admin.keyword');?>:</strong><br />
 								<?php print form::input('keyword', '', ' class="text"'); ?>
 							</div>
 							<div class="tab_form_item">
-								<strong><?php echo Kohana::lang('socialmedia.disable');?>:</strong><br />
+								<strong><?php echo Kohana::lang('ui_main.disabled');?>:</strong><br />
 								<?php print form::checkbox('disabled', 1); ?>
 							</div>
 							<div class="tab_form_item">

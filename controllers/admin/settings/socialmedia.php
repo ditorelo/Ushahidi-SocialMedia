@@ -190,8 +190,8 @@ class SocialMedia_Controller extends Admin_Controller {
 	 */
 	public static function subtabs($this_sub_page = FALSE)
 	{
-		$menu = "<li><a href='" . url::site() . "admin/settings/socialmedia'" . ($this_sub_page == "main" ? null : " class='active'") . ">General</a></li>";
-		$menu .= "<li><a href='" . url::site() . "admin/settings/socialmedia/keywords'" . ($this_sub_page == "keywords" ? null : " class='active'") . ">Keywords</a></li>";
+		$menu = "<li><a href='" . url::site() . "admin/settings/socialmedia'" . ($this_sub_page != "main" ? null : " class='active'") . ">General</a></li>";
+		$menu .= "<li><a href='" . url::site() . "admin/settings/socialmedia/keywords'" . ($this_sub_page != "keywords" ? null : " class='active'") . ">" . Kohana::lang('ui_admin.keywords') . "</a></li>";
 
 
 		echo $menu;
