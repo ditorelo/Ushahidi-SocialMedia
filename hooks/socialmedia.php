@@ -33,12 +33,24 @@ class socialmedia {
 		{
 			Event::add('ushahidi_action.nav_admin_settings', array($this, '_socialmedia'));
 		}
+
+		// Only add the events if we are on that controller
+		if (Router::$controller == 'messages' or Router::$controller == 'socialmedia')
+		{
+			Event::add('ushahidi_action.nav_admin_messages', array($this, '_messages'));
+		}
 	}
 
 	public function _socialmedia()
 	{
 		$this_sub_page = Event::$data;
 		echo ($this_sub_page == "socialmedia") ? "SocialMedia" : "<a href=\"".url::site()."admin/settings/socialmedia\">SocialMedia</a>";
+	}
+
+	public function _messages()
+	{
+		$this_sub_page = Event::$data;
+		echo ($this_sub_page == "socialmedia") ? "SocialMedia" : "<a href=\"".url::site()."admin/messages/socialmedia\">SocialMedia</a>";
 	}
 }
 
