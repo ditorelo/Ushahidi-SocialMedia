@@ -34,20 +34,22 @@ class Socialmedia_Install {
 		// Include the table_prefix
         $table_prefix = Kohana::config('database.default.table_prefix');
 		$this->db->query("
-                    CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "` (
-                      `id` int(11) NOT NULL AUTO_INCREMENT,
-                      `channel` VARCHAR(20) NOT NULL COMMENT 'Should be set by plugin, denotes where message came from' ,
-                      `channel_id` VARCHAR(255) NOT NULL COMMENT 'Message ID on channel' ,
-                      `message` TEXT NOT NULL COMMENT 'Body of message' ,
-                      `url` TEXT NOT NULL COMMENT 'URL of original message' ,
-                      `original_date` INT NOT NULL COMMENT 'Date of original message, in unixtimestamp' ,
-                      `latitude` DECIMAL(10,8) NULL ,
-                      `longitude` DECIMAL(11,8) NULL ,
-                      `status` INT NOT NULL COMMENT 'Current status of message' ,
-                      `priority` int(11) NOT NULL DEFAULT '0',
-                      PRIMARY KEY (`id`) )
-                    DEFAULT CHARACTER SET = utf8
-                    COMMENT = 'Holds all socialmedia info crawled by subplugins'");
+                   CREATE TABLE `" . $table_prefix . self::TABLE_NAME . "_messages` (
+						`id` int(11) NOT NULL AUTO_INCREMENT,
+						`channel` varchar(20) NOT NULL COMMENT 'Should be set by plugin, denotes where message came from',
+						`channel_id` varchar(255) NOT NULL COMMENT 'Message ID on channel',
+						`message` text NOT NULL COMMENT 'Body of message',
+						`url` text NOT NULL COMMENT 'URL of original message',
+						`original_date` int(11) NOT NULL COMMENT 'Date of original message, in unixtimestamp',
+						`latitude` decimal(10,8) DEFAULT NULL,
+						`longitude` decimal(11,8) DEFAULT NULL,
+						`status` int(11) NOT NULL COMMENT 'Current status of message',
+						`priority` int(11) NOT NULL DEFAULT '0',
+						`author_id` int(11) NOT NULL,
+						`incident_id` int(11) DEFAULT NULL,
+						PRIMARY KEY (`id`)
+					) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Holds all socialmedia info crawled by subplugins';");
+
 
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_settings` (
 					id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -64,8 +66,16 @@ class Socialmedia_Install {
 					PRIMARY KEY (`id`)
 				);");
 
-			// Add crawler in to scheduler table
-			$this->db->query("INSERT IGNORE INTO `" . $table_prefix . "scheduler`
+		$this->db->query("CREATE TABLE `" . $table_prefix . self::TABLE_NAME . "_authors` (
+					`id` int(11) NOT NULL AUTO_INCREMENT,
+					`author` varchar(255) NOT NULL,
+					`channel_id` varchar(255) NOT NULL,
+					`channel` varchar(20) DEFAULT NULL,
+					PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+		// Add crawler in to scheduler table
+		$this->db->query("INSERT IGNORE INTO `" . $table_prefix . "scheduler`
 				(`scheduler_name`,`scheduler_last`,`scheduler_weekday`,`scheduler_day`,`scheduler_hour`,`scheduler_minute`,`scheduler_controller`,`scheduler_active`) VALUES
 				('Ushahidi-SocialMedia','0','-1','-1','-1','-1','s_socialmedia','1')");
 	}
@@ -77,16 +87,19 @@ class Socialmedia_Install {
 	public function uninstall()
 	{
 		$this->db->query("
-			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "`;
+			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "_messages`;
 			");
 
 		$this->db->query("
 			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "_settings`;
 			");
 
-
 		$this->db->query("
 			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "_keywords`;
+			");
+
+		$this->db->query("
+			DROP TABLE `".Kohana::config('database.default.table_prefix') . self::TABLE_NAME . "_authors`;
 			");
 
 		$this->db->query("

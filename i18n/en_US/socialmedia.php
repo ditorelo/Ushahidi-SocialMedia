@@ -8,5 +8,14 @@
 		'start_date'				=> 'Start Date',
 		'start_date_explanation'	=> 'In case the social media plataform supports a start date, the crawling will start from the date set above. Note that this setting won\'t apply if the system has already retrived data for a plataform',
 	),
+	'messages'	=> array(
+		'to_review'					=> 'Awaiting review',
+		'potential_report'			=> 'Potential reports',
+		'reported'					=> 'Reported',
+		'discarded'					=> 'Discarded',
+		'discard'					=> 'Discard',
+		'are_you_sure_you_want_to_mark_reports'	=> "Are you sure you want to mark this reports as",
+		''
+	)
 );
 ?>
