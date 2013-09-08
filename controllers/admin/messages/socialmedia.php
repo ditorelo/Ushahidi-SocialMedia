@@ -53,8 +53,7 @@ class SocialMedia_Controller extends Admin_Controller {
 				$status = $action_to_status[$post->action];
 
 				$message = ORM::factory("SocialMedia_Message")->find($message);
-				$message->status = $status;
-				$message->save();
+				$message->updateStatus($status);
 			}
 
 			$saved = true;
@@ -89,7 +88,7 @@ class SocialMedia_Controller extends Admin_Controller {
 		'query_string'   => 'page',
 		'items_per_page' => $this->items_per_page,
 		'total_items'    => ORM::factory('SocialMedia_Message')
-			->where("status", $filter)
+			->where("socialmedia_messages.status", $filter)
 			->count_all()
 		));
 
@@ -99,7 +98,7 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		$entries = ORM::factory('SocialMedia_Message')
 			->join('socialmedia_authors','socialmedia_messages.author_id','socialmedia_authors.id')
-			->where("status", $filter)
+			->where("socialmedia_messages.status", $filter)
 			->orderby('priority','DESC')
 			->orderby('original_date','ASC')
 			->find_all($this->items_per_page, $pagination->sql_offset);
@@ -108,65 +107,64 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		// Counts
 		$this->template->content->count_to_review = ORM::factory('SocialMedia_Message')
-				->where("status", SocialMedia_Message_Model::STATUS_TOREVIEW)
+				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_TOREVIEW)
 				->count_all();
 
 		// Counts
 		$this->template->content->count_potential = ORM::factory('SocialMedia_Message')
-				->where("status", SocialMedia_Message_Model::STATUS_POTENTIAL)
+				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_POTENTIAL)
 				->count_all();
 
 		// Counts
 		$this->template->content->count_reported = ORM::factory('SocialMedia_Message')
-				->where("status", SocialMedia_Message_Model::STATUS_REPORTED)
+				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_REPORTED)
 				->count_all();
 
 		// Counts
 		$this->template->content->count_spam = ORM::factory('SocialMedia_Message')
-				->where("status", SocialMedia_Message_Model::STATUS_SPAM)
+				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_SPAM)
 				->count_all();
 
 		// Counts
 		$this->template->content->count_discarded = ORM::factory('SocialMedia_Message')
-				->where("status", SocialMedia_Message_Model::STATUS_DISCARDED)
+				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_DISCARDED)
 				->count_all();
 
 		$this->themes->js = new View('admin/messages/socialmedia/main_js');
 
-/*		$radius_options = array("" => "");
-		for ($i = 10; $i < 100; $i += 10) {
-			$radius_options[$i] = $i . "km (" . number_format($i/1.6, 2) . " mi)";
+	}
+
+	public function report($message_id)
+	{
+		$message = ORM::factory("SocialMedia_Message")->find($message_id);
+
+		if (! $message->loaded) {
+			url::redirect(url::site() . 'admin/messages/socialmedia');
 		}
 
-		for ($i = 100; $i <= 1000; $i += 100) {
-			$radius_options[$i] = $i . "km (" . number_format($i/1.6, 2) . " mi)";
-		}
+		$this->template = null;
+		$this->auto_render = FALSE;
 
+		$view = new View('admin/messages/socialmedia/report');
 
-		if (! $latitude = socialmedia_helper::getSetting("latitude")) {
-			$latitude = Kohana::config('settings.default_lat');
-		}
+		$view->set("incident_description", 	html::specialchars($message->message));
+		$view->set("latitude", 		$message->latitude);
+		$view->set("longitude", 	$message->longitude);
+		$view->set("incident_news", $message->url);
+		$view->set("incident_date", 	date('m/d/Y', $message->original_date));
+		$view->set("incident_hour", 	date('h', $message->original_date));
+		$view->set("incident_minute", 	date('i', $message->original_date));
+		$view->set("incident_ampm", 	date('a', $message->original_date));
+		$view->set("socialmediaid", 	$message->id);
 
-		if (! $longitude = socialmedia_helper::getSetting("longitude")) {
-			$longitude = Kohana::config('settings.default_lon');
-		}
+		// reverse_geocode will return false if latitude or longitude are false
+		$view->set("location_name", 	map::reverse_geocode($message->latitude, $message->longitude));
 
-		$this->template->content->latitude = $latitude;
-		$this->template->content->longitude = $longitude;
-		$this->template->content->radius_options = $radius_options;
+		// the only reason I'm doing this here is because I couldn't get custom fields working
+		// this is very fragile as it doesn't ensure the report is being created.
+		$message->updateStatus(SocialMedia_Message_Model::STATUS_REPORTED);
 
-		$this->template->content->enable_location = socialmedia_helper::getSetting("enable_location");
-		$this->template->content->start_date = socialmedia_helper::getSetting("start_date");
-		$this->template->content->radius = socialmedia_helper::getSetting("radius");
-
-
-
-
-		// Display all maps
-		$this->themes->map_enabled = TRUE;
-		$this->themes->js->latitude = $latitude;
-		$this->themes->js->longitude = $longitude;
-		$this->themes->js->default_zoom = Kohana::config('settings.default_zoom');*/
+		$view->render(true);
 	}
 
 
@@ -185,5 +183,35 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		// Action::socialmedia.settings_subtabs - Add items to the social media settings page
 		Event::run('socialmedia.settings_subtabs', $this_sub_page);
+	}
+
+	public function tool()
+	{
+		$this->template->content = new View('admin/messages/socialmedia/tool');
+		$this->template->content->title = Kohana::lang('ui_admin.settings');
+
+		$filter = "`status` = " . SocialMedia_Message_Model::STATUS_TOREVIEW . " OR ";
+		$filter .= "(`status` = " . SocialMedia_Message_Model::STATUS_INREVIEW . " AND `in_review` < " . strtotime("10 minutes ago") . ")";
+
+		$random_message = ORM::factory("SocialMedia_Message")
+					->where($filter)
+					//->where("id", 860)
+					->orderby("original_date", "DESC")
+					->limit(1)
+					->find_all();
+
+		$message = $random_message->as_array();
+
+		//this is poor...
+		$message = ORM::factory("Socialmedia_Message")->find($message[0]->id);
+
+		$message->in_review = time();
+		$message->updateStatus(SocialMedia_Message_Model::STATUS_INREVIEW);
+
+		$this->template->content->message = $message;
+		$this->themes->js = new View('admin/messages/socialmedia/tool_js');
+
+		$this->themes->map_enabled = TRUE;
+		$this->themes->js->default_zoom = Kohana::config('settings.default_zoom');
 	}
 }

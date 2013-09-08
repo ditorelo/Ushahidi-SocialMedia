@@ -10,12 +10,23 @@
 	),
 	'messages'	=> array(
 		'to_review'					=> 'Awaiting review',
-		'potential_report'			=> 'Potential reports',
+		'potential_reports'			=> 'Potential reports',
 		'reported'					=> 'Reported',
 		'discarded'					=> 'Discarded',
 		'discard'					=> 'Discard',
 		'are_you_sure_you_want_to_mark_reports'	=> "Are you sure you want to mark this reports as",
-		''
+		'geotagged'					=> 'Geotagged',
+		'trusted_reporter'			=> 'Trusted Reporter',
+		'assets'					=> array(
+										'title'		=> "Assets",
+										'url'		=> "URL",
+										'photo'		=> "Photo",
+										'other'		=> "Other"
+									),
+		'tool'						=> array(
+										'launch'				=> "Launch filtering tool",
+										'potential_report'		=> 'Potential report',
+									)
 	)
 );
 ?>

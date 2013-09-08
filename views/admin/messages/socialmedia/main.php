@@ -13,7 +13,6 @@
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
 ?>
-			<div class="bg">
 				<h2>
 					<?php admin::messages_subtabs("socialmedia"); ?>
 				</h2>
@@ -42,6 +41,8 @@
 						<?php endif; ?>
 
 						</ul>
+
+						<div class="sort_by" style="background-color: #9b0000; padding: 10px 10px;"><a style="color:#fff" href="/admin/messages/socialmedia/tool"><?php echo utf8::strtoupper(Kohana::lang('socialmedia.messages.tool.launch'));?></a></div>
 					</div>
 				</div>
 				<?php 
@@ -97,9 +98,9 @@
 											<h3><?php echo Kohana::lang('ui_main.no_results');?></h3>
 										</td>
 									</tr>
-								<?php	
+								<?php
 								}
-								
+
 								foreach ($entries as $entry)
 								{
 									$entry_id = $entry->id;
@@ -116,8 +117,24 @@
 												<p><?php echo $entry_description; ?></p>
 											</div>
 											<ul class="info">
-												<li class="none-separator"><?php echo Kohana::lang('ui_main.from');?>: <strong><a href="<?php echo $entry_link; ?>" target="_blank"><?php echo $entry_from; ?></a></strong>
+												<li class="none-separator"><?php echo Kohana::lang('ui_main.from');?>: <strong><a href="<?php echo $entry_link; ?>" target="_blank"><?php echo $entry_from; ?></a></strong></li>
+											<?php if (! empty($entry->longitude) && !empty($entry->latitude)): ?>
+												<li><strong><?php echo Kohana::lang('socialmedia.messages.geotagged');?></strong></li>
+											<?php endif; ?>
+											<?php if ($entry->author->status == SocialMedia_Author_Model::STATUS_TRUSTED): ?>
+												<li><?php echo Kohana::lang('socialmedia.messages.trusted_reporter');?></li>
+											<?php endif; ?>
 											</ul>
+
+											<?php if ($entry->Socialmedia_Asset->count() > 0): ?>
+												<p><strong><?php echo Kohana::lang('socialmedia.messages.assets.title'); ?></strong></p>
+												<p>
+													<?php foreach ($entry->Socialmedia_Asset as $media): ?>
+														<?php echo Kohana::lang('socialmedia.messages.assets.' . $media->type); ?>: 
+														<a target="_blank" href="<?php echo $media->url; ?>"><?php echo $media->url; ?><br />
+													<?php endforeach; ?>
+												</p>
+											<?php endif; ?>
 										</td>
 										<td class="col-3"><?php echo $entry_date; ?></td>
 										<td class="col-4">
@@ -128,7 +145,7 @@
 												}
 												else
 												{
-													echo "<li class=\"none-separator\"><a href=\"". url::site() . 'admin/reports/edit?tid=' . $entry_id ."\">".Kohana::lang('ui_main.create_report')."?</a></li>";
+													echo "<li class=\"none-separator\"><a href=\"". url::site() . 'admin/messages/socialmedia/report/' . $entry_id ."\">".Kohana::lang('ui_main.create_report')."?</a></li>";
 												}
 												?>
 												<li>
@@ -143,4 +160,3 @@
 						</table>
 					</div>
 				<?php print form::close(); ?>
-			</div>

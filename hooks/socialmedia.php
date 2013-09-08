@@ -39,6 +39,8 @@ class socialmedia {
 		{
 			Event::add('ushahidi_action.nav_admin_messages', array($this, '_messages'));
 		}
+
+		Event::add('ushahidi_action.report_edit', array($this, '_save_incident_id'));
 	}
 
 	public function _socialmedia()
@@ -51,6 +53,12 @@ class socialmedia {
 	{
 		$this_sub_page = Event::$data;
 		echo ($this_sub_page == "socialmedia") ? "SocialMedia" : "<a href=\"".url::site()."admin/messages/socialmedia\">SocialMedia</a>";
+	}
+
+	public function _save_incident_id() {
+		$incident = Event::$data;
+		var_dump($incident);
+		die();
 	}
 }
 
