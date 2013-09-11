@@ -28,19 +28,20 @@ class socialmedia {
 	 */
 	public function add()
 	{
-		// Only add the events if we are on that controller
+		// Settings menu
 		if (Router::$controller == 'settings' or Router::$controller == 'socialmedia')
 		{
 			Event::add('ushahidi_action.nav_admin_settings', array($this, '_socialmedia'));
 		}
 
-		// Only add the events if we are on that controller
+		// Messages menu
 		if (Router::$controller == 'messages' or Router::$controller == 'socialmedia')
 		{
 			Event::add('ushahidi_action.nav_admin_messages', array($this, '_messages'));
 		}
 
-		Event::add('ushahidi_action.report_edit', array($this, '_save_incident_id'));
+		// TODO: Hook up incident ID to message once report is saved
+		//Event::add('ushahidi_action.report_edit', array($this, '_save_incident_id'));
 	}
 
 	public function _socialmedia()
@@ -55,11 +56,13 @@ class socialmedia {
 		echo ($this_sub_page == "socialmedia") ? "SocialMedia" : "<a href=\"".url::site()."admin/messages/socialmedia\">SocialMedia</a>";
 	}
 
+/*
 	public function _save_incident_id() {
 		$incident = Event::$data;
 		var_dump($incident);
 		die();
 	}
+*/
 }
 
 new socialmedia;

@@ -21,6 +21,7 @@ class Socialmedia_Author_Model extends ORM
 	// Database table name
 	protected $table_name = 'socialmedia_authors';
 
+	// Constants
 	const STATUS_NORMAL 	= 0;
 	const STATUS_SPAM		= 10;
 	const STATUS_TRUSTED	= 100;

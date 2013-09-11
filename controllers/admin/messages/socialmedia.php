@@ -28,7 +28,7 @@ class SocialMedia_Controller extends Admin_Controller {
 	}
 
 	static private function processSubmit() {
-		if ($_POST) {
+		if ($_POST && !empty($_POST["action"])) {
 			$post = Validation::factory($_POST);
 
 			//  Add some filters
@@ -187,6 +187,8 @@ class SocialMedia_Controller extends Admin_Controller {
 
 	public function tool()
 	{
+		self::processSubmit();
+
 		$this->template->content = new View('admin/messages/socialmedia/tool');
 		$this->template->content->title = Kohana::lang('ui_admin.settings');
 
@@ -209,6 +211,11 @@ class SocialMedia_Controller extends Admin_Controller {
 		$message->updateStatus(SocialMedia_Message_Model::STATUS_INREVIEW);
 
 		$this->template->content->message = $message;
+		$this->template->content->messages_left = ORM::factory("Socialmedia_Message")
+													->where("status", SocialMedia_Message_Model::STATUS_TOREVIEW)
+													->orwhere("status", SocialMedia_Message_Model::STATUS_INREVIEW)
+													->count_all();
+
 		$this->themes->js = new View('admin/messages/socialmedia/tool_js');
 
 		$this->themes->map_enabled = TRUE;

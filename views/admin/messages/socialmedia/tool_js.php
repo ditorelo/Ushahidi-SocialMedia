@@ -77,4 +77,13 @@
 		radius_field.change(draw_circle);
 	}
 
+	function toolAction(action) {
+		var $form = $(document.getElementById("toolForm"));
+
+		$('input[name="action"]', $form).val(action);
+		$form.submit();
+
+		return false;
+	}
+
 $(document).ready(showMap);

@@ -22,6 +22,7 @@ class Socialmedia_Message_Model extends ORM
 	// Database table name
 	protected $table_name = 'socialmedia_messages';
 
+	// Constants 
 	const STATUS_TOREVIEW 	= 0;
 	const STATUS_DISCARDED 	= 1;
 	const STATUS_INREVIEW 	= 2;
@@ -31,8 +32,12 @@ class Socialmedia_Message_Model extends ORM
 
 	const CHANNEL_TWITTER = 'twitter';
 
-
-	public function updateStatus($s, $make_spam =true) {
+	/**
+	 * Helper to update message status
+	 * @param integer Status
+	 * @param boolean(optional) $make_spam If Status is STATUS_SPAM will update messages from same author as spam and also flag author as spammer (default true)
+	 */
+	public function updateStatus($s, $make_spam = true) {
 		$this->status = $s;
 		$this->save(true);
 
@@ -42,27 +47,37 @@ class Socialmedia_Message_Model extends ORM
 		}
 	}
 
+	/**
+	 * Overrides save function for Spam and Trusted checks
+	 * @param boolean $ignore_auto_spam_check Won't set message as spam even if author is flagged as spammer (default false)
+	 */
 	public function save($ignore_auto_spam_check = false) {
 		if (! $ignore_auto_spam_check) 
 		{
+			// Marking message as spam if author is spammer
 			if ($this->author->status == SocialMedia_Author_Model::STATUS_SPAM) 
 			{
-				$this->status = Socialmedia_Message_Model::STATUS_SPAM;
+				$this->status = self::STATUS_SPAM;
 			}
 		}
 
-		if ($this->author->status == SocialMedia_Author_Model::STATUS_TRUSTED) 
+		// bumps message status if author is trusted
+		if ($this->author->status == SocialMedia_Author_Model::STATUS_TRUSTED && $this->status == self::STATUS_TOREVIEW) 
 		{
-			$this->status = Socialmedia_Message_Model::STATUS_POTENTIAL;
+			$this->status = self::STATUS_POTENTIAL;
 		}
 
 		$this->last_updated = time();
 		return parent::save();
 	}
 
+	/**
+	 * Mark message and authors as spam
+	 */
 	public function makeSpam() {
 		$this->author->updateStatus(SocialMedia_Author_Model::STATUS_SPAM);
 
+		// Updates all messages from author as spam
 		$messages_from_author = ORM::factory("Socialmedia_Message")
 									->where("author_id", $this->author->id)
 									->find_all();
@@ -73,6 +88,10 @@ class Socialmedia_Message_Model extends ORM
 		}
 	}
 
+	/**
+	 * Saves Assets relates to this media as a Socialmedia_asset
+	 * @param array Each asset should be represented by a [type, url] array
+	 */
 	public function addAssets($media) {
 		foreach ($media as $type => $objects) 
 		{
@@ -81,7 +100,7 @@ class Socialmedia_Message_Model extends ORM
 				$media = ORM::factory("Socialmedia_Asset");
 				$media->type = $type;
 				$media->url = $url;
-				$media->message_id = $this->id;
+				$media->socialmedia_message_id = $this->id;
 				$media->save();
 			}
 		}
