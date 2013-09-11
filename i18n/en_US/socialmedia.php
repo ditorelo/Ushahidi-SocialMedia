@@ -11,12 +11,14 @@
 	'messages'	=> array(
 		'to_review'					=> 'Awaiting review',
 		'potential_reports'			=> 'Potential reports',
+		'potential_report'			=> 'Potential report',
 		'reported'					=> 'Reported',
 		'discarded'					=> 'Discarded',
 		'discard'					=> 'Discard',
 		'are_you_sure_you_want_to_mark_reports'	=> "Are you sure you want to mark this reports as",
 		'geotagged'					=> 'Geotagged',
 		'trusted_reporter'			=> 'Trusted Reporter',
+		'spam_reporter'				=> 'Reporter flagged as spammer',
 		'assets'					=> array(
 										'title'		=> "Assets",
 										'url'		=> "URL",
@@ -26,7 +28,10 @@
 		'tool'						=> array(
 										'launch'				=> "Launch filtering tool",
 										'potential_report'		=> 'Potential report',
-									)
+									),
+		'amount_left'				=> "Amount left",
+		'skip'						=> "Skip",
+		'back'						=> 'Back to main screen'
 	)
 );
 ?>
