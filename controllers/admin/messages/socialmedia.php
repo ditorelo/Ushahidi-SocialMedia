@@ -85,49 +85,56 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		// Pagination
 		$pagination = new Pagination(array(
-		'query_string'   => 'page',
-		'items_per_page' => $this->items_per_page,
-		'total_items'    => ORM::factory('SocialMedia_Message')
-			->where("socialmedia_messages.status", $filter)
-			->count_all()
+			'query_string'   => 'page',
+			'items_per_page' => $this->items_per_page,
+			'total_items'    => ORM::factory('Socialmedia_Message')
+				->join("reporter", "reporter.id", "message.reporter_id")
+				->like("message_from", "SocialMedia")
+				->where("message_level", $filter)
+				->count_all()
 		));
 
 		$this->template->content->pagination = $pagination;
 
 		$this->template->content->total_items = $pagination->total_items;
 
-		$entries = ORM::factory('SocialMedia_Message')
-			->join('socialmedia_authors','socialmedia_messages.author_id','socialmedia_authors.id')
-			->where("socialmedia_messages.status", $filter)
-			->orderby('priority','DESC')
-			->orderby('original_date','ASC')
+		$entries = ORM::factory('Socialmedia_Message')
+			->join("reporter", "reporter.id", "message.reporter_id")
+			->like("message_from", "SocialMedia")
+			->where("message_level", $filter)
+			->orderby('message_date','ASC')
 			->find_all($this->items_per_page, $pagination->sql_offset);
 
 		$this->template->content->entries = $entries;
 
 		// Counts
-		$this->template->content->count_to_review = ORM::factory('SocialMedia_Message')
-				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_TOREVIEW)
+		$this->template->content->count_to_review = ORM::factory('Socialmedia_Message')
+				->where("message_level", SocialMedia_Message_Model::STATUS_TOREVIEW)
+				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
-		$this->template->content->count_potential = ORM::factory('SocialMedia_Message')
-				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_POTENTIAL)
+		$this->template->content->count_potential = ORM::factory('Socialmedia_Message')
+				->where("message_level", SocialMedia_Message_Model::STATUS_POTENTIAL)
+				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
-		$this->template->content->count_reported = ORM::factory('SocialMedia_Message')
-				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_REPORTED)
+		$this->template->content->count_reported = ORM::factory('Socialmedia_Message')
+				->where("message_type", SocialMedia_Message_Model::STATUS_REPORTED)
+				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
-		$this->template->content->count_spam = ORM::factory('SocialMedia_Message')
-				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_SPAM)
+		$this->template->content->count_spam = ORM::factory('Socialmedia_Message')
+				->where("message_level", SocialMedia_Message_Model::STATUS_SPAM)
+				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
-		$this->template->content->count_discarded = ORM::factory('SocialMedia_Message')
-				->where("socialmedia_messages.status", SocialMedia_Message_Model::STATUS_DISCARDED)
+		$this->template->content->count_discarded = ORM::factory('Socialmedia_Message')
+				->where("message_level", SocialMedia_Message_Model::STATUS_DISCARDED)
+				->like("message_from", "SocialMedia")
 				->count_all();
 
 		$this->themes->js = new View('admin/messages/socialmedia/main_js');

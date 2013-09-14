@@ -104,10 +104,11 @@
 								foreach ($entries as $entry)
 								{
 									$entry_id = $entry->id;
-									$entry_link = $entry->url;
-									$entry_description = $entry->message;
-									$entry_from = $entry->channel;
-									$entry_date = date('Y-m-d', $entry->original_date);
+									$entry_link = $entry->getData("url");
+									$entry_description = $entry->message_detail;
+									$entry_from = trim($entry->reporter->reporter_first . " " . $entry->reporter->reporter_last);
+									$entry_from .= "(" . $entry->reporter->reporter_email . ")";
+									$entry_date = date('Y-m-d', strtotime($entry->message_date));
 									$incident_id = $entry->incident_id;
 									?>
 									<tr>
@@ -121,7 +122,7 @@
 											<?php if (! empty($entry->longitude) && !empty($entry->latitude)): ?>
 												<li><strong><?php echo Kohana::lang('socialmedia.messages.geotagged');?></strong></li>
 											<?php endif; ?>
-											<?php if ($entry->author->status == SocialMedia_Author_Model::STATUS_TRUSTED): ?>
+											<?php if ($entry->reporter->level_id == SocialMedia_Message_Model::STATUS_TRUSTED): ?>
 												<li><?php echo Kohana::lang('socialmedia.messages.trusted_reporter');?></li>
 											<?php endif; ?>
 											</ul>

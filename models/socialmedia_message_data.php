@@ -14,19 +14,11 @@
  * @license    http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License (LGPL) 
  */
 
-class Socialmedia_Author_Model extends ORM
+class Socialmedia_Message_Data_Model extends ORM
 {
-	protected $belongs_to = array('socialmedia_message');
-	
+	protected $belongs_to = array('Socialmedia_Message');
+
+
 	// Database table name
-	protected $table_name = 'socialmedia_authors';
-
-	const STATUS_NORMAL 	= 0;
-	const STATUS_SPAM		= 10;
-	const STATUS_TRUSTED	= 100;
-
-	public function updateStatus($s) {
-		$this->status = $s;
-		$this->save();
-	}
+	protected $table_name = 'socialmedia_messages_data';
 }
