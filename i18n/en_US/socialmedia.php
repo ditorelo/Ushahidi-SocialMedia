@@ -15,7 +15,7 @@
 		'reported'					=> 'Reported',
 		'discarded'					=> 'Discarded',
 		'discard'					=> 'Discard',
-		'are_you_sure_you_want_to_mark_reports'	=> "Are you sure you want to mark this reports as",
+		'are_you_sure_you_want_to_mark_reports'	=> "Are you sure you want to mark this report(s) as",
 		'geotagged'					=> 'Geotagged',
 		'trusted_reporter'			=> 'Trusted Reporter',
 		'spam_reporter'				=> 'Reporter flagged as spammer',
@@ -31,7 +31,8 @@
 									),
 		'amount_left'				=> "Amount left",
 		'skip'						=> "Skip",
-		'back'						=> 'Back to main screen'
+		'back'						=> 'Back to main screen',
+		'message_in_review'			=> 'Message in review - check with your team before taking any action on it!'
 	)
 );
 ?>

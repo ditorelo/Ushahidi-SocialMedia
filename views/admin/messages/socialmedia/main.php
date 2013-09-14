@@ -107,14 +107,14 @@
 									$entry_link = $entry->getData("url");
 									$entry_description = $entry->message_detail;
 									$entry_from = trim($entry->reporter->reporter_first . " " . $entry->reporter->reporter_last);
-									$entry_from .= "(" . $entry->reporter->reporter_email . ")";
+									$entry_from .= " (" . $entry->reporter->reporter_email . ")";
 									$entry_date = date('Y-m-d', strtotime($entry->message_date));
 									$incident_id = $entry->incident_id;
 									?>
 									<tr>
 										<td class="col-1"><input name="message_id[]" id="message_id" value="<?php echo $entry_id; ?>" type="checkbox" class="check-box"/></td>
 										<td class="col-2">
-											<p style="margin:0; padding-right: 20px;"><?php echo $entry_description; ?></p>
+											<div class="post"><?php echo $entry_description; ?></div>
 
 											<ul class="info">
 												<li class="none-separator"><?php echo Kohana::lang('ui_main.from');?>: <strong><a href="<?php echo $entry_link; ?>" target="_blank"><?php echo $entry_from; ?></a></strong></li>
@@ -126,13 +126,19 @@
 											<?php endif; ?>
 											</ul>
 
+											<?php if ($entry->message_level == SocialMedia_Message_Model::STATUS_INREVIEW): ?>
+											<ul class="info">
+												<li class="none-separator"><?php echo Kohana::lang('socialmedia.messages.message_in_review');?></li>
+											</ul>
+											<?php endif; ?>
+
 											<?php if ($entry->Socialmedia_Asset->count() > 0): ?>
-												<p>
+												<ul class="links">
 													<?php foreach ($entry->Socialmedia_Asset as $media): ?>
-														<?php echo Kohana::lang('socialmedia.messages.assets.' . $media->type); ?>: 
-														<a target="_blank" href="<?php echo $media->url; ?>"><?php echo $media->url; ?><br />
+														<li><?php echo Kohana::lang('socialmedia.messages.assets.' . $media->type); ?>: 
+														<a target="_blank" href="<?php echo $media->url; ?>"><?php echo $media->url; ?></li>
 													<?php endforeach; ?>
-												</p>
+												</ul>
 											<?php endif; ?>
 										</td>
 										<td class="col-3"><?php echo $entry_date; ?></td>
@@ -140,11 +146,39 @@
 											<ul>
 												<?php
 												if ($incident_id != 0) {
-													echo "<li class=\"none-separator\"><a href=\"". url::site() . 'admin/reports/edit/' . $entry_id ."\" class=\"status_yes\"><strong>".Kohana::lang('ui_main.view_report')."</strong></a></li>";
+													echo "<li class=\"none-separator\"><a href=\"". url::site() . 'admin/reports/edit/' . $incident_id . "\" class=\"status_yes\"><strong>".Kohana::lang('ui_main.view_report')."</strong></a></li>";
 												}
 												else
 												{
 													echo "<li class=\"none-separator\"><a href=\"". url::site() . 'admin/messages/socialmedia/report/' . $entry_id ."\">".Kohana::lang('ui_main.create_report')."?</a></li>";
+
+													if ($entry->message_level == SocialMedia_Message_Model::STATUS_SPAM) 
+													{
+														echo "<li>" . Kohana::lang('ui_main.spam') . "</li>";
+													} 
+													else 
+													{
+														echo "<li><a class='del' href=\"#\" onclick=\"socialMediaAction('s', 'SPAM', " . $entry->id . ")\">" . Kohana::lang('ui_main.spam') . "?</a></li>";
+													} 
+
+													if ($entry->message_level == SocialMedia_Message_Model::STATUS_POTENTIAL) 
+													{
+														echo "<li class=\"none-separator\">" . Kohana::lang('socialmedia.messages.potential_report') . "</li>";
+													} 
+													else 
+													{
+														echo "<li class=\"none-separator\"><a href=\"#\" onclick=\"socialMediaAction('p', 'POTENTIAL', " . $entry->id . ")\">" . Kohana::lang('socialmedia.messages.potential_report') . "?</a></li>";
+													}
+
+													if ($entry->message_level == SocialMedia_Message_Model::STATUS_DISCARDED) 
+													{
+														echo "<li>" . Kohana::lang('socialmedia.messages.discard') . "</li>";
+													} 
+													else
+													{
+														echo "<li><a href=\"#\" onclick=\"socialMediaAction('d', 'DISCARDED', " . $entry->id . ")\">".Kohana::lang('socialmedia.messages.discard')."?</a></li>";
+													}
+
 												}
 												?>
 												<li>

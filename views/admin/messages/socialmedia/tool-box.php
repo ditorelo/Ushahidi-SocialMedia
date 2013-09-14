@@ -9,16 +9,18 @@
         <input type="hidden" value="<?php echo $message->longitude; ?>" id="longitude" />
 	<?php endif; ?>
 
-	<p style="font-size: 2em; max-width: 600px; line-height: 1.4em; margin-top: 0;"><?php echo $message->message ?></p>
+	<p style="font-size: 2em; max-width: 600px; line-height: 1.4em; margin-top: 0;"><?php echo $message->message_detail ?></p>
 
-	<p><?php echo Kohana::lang('ui_main.from');?>: <a href="<?php echo $message->url; ?>" target="_blank"><?php echo $message->channel; ?></a><br />
-		ID: <?php echo $message->id; ?><br />
-	<?php echo Kohana::lang('ui_main.reporter');?>: <?php echo $message->author->author; ?>
-	<?php if ($message->author->status == SocialMedia_Author_Model::STATUS_TRUSTED): ?>
-		(<?php echo Kohana::lang('socialmedia.messages.trusted_reporter');?>)
-	<?php elseif ($message->author->status == SocialMedia_Author_Model::STATUS_SPAM): ?>
-		(<?php echo Kohana::lang('socialmedia.messages.spam_reporter');?>)		
+	<p><?php echo Kohana::lang('ui_main.from');?>: <a href="<?php echo $message->getData("url"); ?>" target="_blank"><?php echo trim($message->reporter->reporter_first . " " . $message->reporter->reporter_last) . "(" . $message->reporter->reporter_email . ")" ?></a><br />
+	<?php if ($message->reporter->level_id == SocialMedia_Message_Model::STATUS_TRUSTED): ?>
+		(<?php echo Kohana::lang('socialmedia.messages.trusted_reporter');?>)<br />
+	<?php elseif ($message->reporter->level_id == SocialMedia_Message_Model::STATUS_SPAM): ?>
+		(<?php echo Kohana::lang('socialmedia.messages.spam_reporter');?>)<br />
 	<?php endif; ?>
+		<?php if ($message->message_level == SocialMedia_Message_Model::STATUS_INREVIEW): ?>
+		<br /><?php echo Kohana::lang('socialmedia.messages.message_in_review');?><br />
+		<?php endif; ?>
+		ID: <?php echo $message->id; ?></p>
 	</p>
 
 	<?php if ($message->Socialmedia_Asset->count() > 0): ?>

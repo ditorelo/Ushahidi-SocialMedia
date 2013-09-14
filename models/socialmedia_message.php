@@ -90,7 +90,7 @@ class Socialmedia_Message_Model extends Message_Model
 
 
 	public function updateStatus($s, $make_spam =true) {
-		$this->status = $s;
+		$this->message_level = $s;
 		$this->save(true);
 
 		if ($make_spam && $s == self::STATUS_SPAM) 
@@ -104,20 +104,22 @@ class Socialmedia_Message_Model extends Message_Model
 	 * @param boolean $ignore_auto_spam_check Won't set message as spam even if author is flagged as spammer (default false)
 	 */
 	public function save($ignore_auto_spam_check = false) {
-		/*if (! $ignore_auto_spam_check) 
+		$reporter = ORM::factory("Reporter")->find($this->reporter_id);
+
+		if (! $ignore_auto_spam_check) 
 		{
 			// Marking message as spam if author is spammer
-			if ($this->author->status == SocialMedia_Author_Model::STATUS_SPAM) 
+			if ($reporter->level_id == Socialmedia_Message_Model::STATUS_SPAM) 
 			{
-				$this->status = self::STATUS_SPAM;
+				$this->message_level = self::STATUS_SPAM;
 			}
 		}
 
 		// bumps message status if author is trusted
-		if ($this->author->status == SocialMedia_Author_Model::STATUS_TRUSTED && $this->status == self::STATUS_TOREVIEW) 
+		if ($reporter->level_id == Socialmedia_Message_Model::STATUS_TRUSTED && $this->message_level == self::STATUS_TOREVIEW) 
 		{
-			$this->status = Socialmedia_Message_Model::STATUS_POTENTIAL;
-		}*/
+			$this->message_level = Socialmedia_Message_Model::STATUS_POTENTIAL;
+		}
 
 		//$this->addData("last_updated", time());
 		return parent::save();
@@ -127,11 +129,12 @@ class Socialmedia_Message_Model extends Message_Model
 	 * Mark message and authors as spam
 	 */
 	public function makeSpam() {
-		$this->author->updateStatus(SocialMedia_Author_Model::STATUS_SPAM);
+		$this->reporter->level_id = SocialMedia_Message_Model::STATUS_SPAM;
+		$this->reporter->save();
 
 		// Updates all messages from author as spam
 		$messages_from_author = ORM::factory("Socialmedia_Message")
-									->where("author_id", $this->author->id)
+									->where("reporter_id", $this->reporter->id)
 									->find_all();
 
 		foreach ($messages_from_author as $message)
@@ -156,7 +159,7 @@ class Socialmedia_Message_Model extends Message_Model
 				$media = ORM::factory("Socialmedia_Asset");
 				$media->type = $type;
 				$media->url = $url;
-				$media->socialmedia_message_id = $this->id;
+				$media->message_id = $this->id;
 				$media->save();
 			}
 		}
@@ -212,6 +215,17 @@ class Socialmedia_Message_Model extends Message_Model
 		$reporter->save();
 
 		return $reporter->id;
+	}
+
+
+	static function update_report_created() {
+		$incident = Event::$data;
+
+		$message = ORM::factory("Socialmedia_Message")
+						->where("incident_id", $incident->id)
+						->find();
+
+		$message->updateStatus(SocialMedia_Message_Model::STATUS_REPORTED);
 	}
 
 }

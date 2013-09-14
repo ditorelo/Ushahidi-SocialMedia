@@ -76,10 +76,13 @@ class SocialMedia_Controller extends Admin_Controller {
 		$this->template->content->form_error = $result["error"];
 		$this->template->content->form_saved = $result["saved"];
 
+		$review_filter = "`message_level` = " . SocialMedia_Message_Model::STATUS_TOREVIEW . " OR ";
+		$review_filter .= "`message_level` = " . SocialMedia_Message_Model::STATUS_INREVIEW;
+
 
 		$filter = isset($_GET["tab"]) && ! empty($_GET["tab"])
-											? $_GET["tab"]
-											: SocialMedia_Message_Model::STATUS_TOREVIEW;
+											? "`message_level` = " . $_GET["tab"]
+											: $review_filter;
 		$this->template->content->tab = $filter;
 
 
@@ -90,7 +93,7 @@ class SocialMedia_Controller extends Admin_Controller {
 			'total_items'    => ORM::factory('Socialmedia_Message')
 				->join("reporter", "reporter.id", "message.reporter_id")
 				->like("message_from", "SocialMedia")
-				->where("message_level", $filter)
+				->where($filter)
 				->count_all()
 		));
 
@@ -101,7 +104,7 @@ class SocialMedia_Controller extends Admin_Controller {
 		$entries = ORM::factory('Socialmedia_Message')
 			->join("reporter", "reporter.id", "message.reporter_id")
 			->like("message_from", "SocialMedia")
-			->where("message_level", $filter)
+			->where($filter)
 			->orderby('message_date','ASC')
 			->find_all($this->items_per_page, $pagination->sql_offset);
 
@@ -109,7 +112,7 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		// Counts
 		$this->template->content->count_to_review = ORM::factory('Socialmedia_Message')
-				->where("message_level", SocialMedia_Message_Model::STATUS_TOREVIEW)
+				->where($review_filter)
 				->like("message_from", "SocialMedia")
 				->count_all();
 
@@ -121,7 +124,7 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		// Counts
 		$this->template->content->count_reported = ORM::factory('Socialmedia_Message')
-				->where("message_type", SocialMedia_Message_Model::STATUS_REPORTED)
+				->where("message_level", SocialMedia_Message_Model::STATUS_REPORTED)
 				->like("message_from", "SocialMedia")
 				->count_all();
 
@@ -154,14 +157,15 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		$view = new View('admin/messages/socialmedia/report');
 
-		$view->set("incident_description", 	html::specialchars($message->message));
+/*		$view->set("incident_description", 	html::specialchars($message->message));
 		$view->set("latitude", 		$message->latitude);
 		$view->set("longitude", 	$message->longitude);
-		$view->set("incident_news", $message->url);
 		$view->set("incident_date", 	date('m/d/Y', $message->original_date));
 		$view->set("incident_hour", 	date('h', $message->original_date));
 		$view->set("incident_minute", 	date('i', $message->original_date));
-		$view->set("incident_ampm", 	date('a', $message->original_date));
+		$view->set("incident_ampm", 	date('a', $message->original_date));*/
+
+		$view->set("incident_news", $message->getData("url"));
 		$view->set("socialmediaid", 	$message->id);
 
 		// reverse_geocode will return false if latitude or longitude are false
@@ -169,7 +173,7 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		// the only reason I'm doing this here is because I couldn't get custom fields working
 		// this is very fragile as it doesn't ensure the report is being created.
-		$message->updateStatus(SocialMedia_Message_Model::STATUS_REPORTED);
+		//$message->updateStatus(SocialMedia_Message_Model::STATUS_REPORTED);
 
 		$view->render(true);
 	}
@@ -199,13 +203,14 @@ class SocialMedia_Controller extends Admin_Controller {
 		$this->template->content = new View('admin/messages/socialmedia/tool');
 		$this->template->content->title = Kohana::lang('ui_admin.settings');
 
-		$filter = "`status` = " . SocialMedia_Message_Model::STATUS_TOREVIEW . " OR ";
-		$filter .= "(`status` = " . SocialMedia_Message_Model::STATUS_INREVIEW . " AND `in_review` < " . strtotime("10 minutes ago") . ")";
+		$filter = "`message_level` = " . SocialMedia_Message_Model::STATUS_TOREVIEW . " OR ";
+		$filter .= "`message_level` = " . SocialMedia_Message_Model::STATUS_INREVIEW;
 
 		$random_message = ORM::factory("SocialMedia_Message")
 					->where($filter)
-					//->where("id", 860)
-					->orderby("original_date", "DESC")
+					//->where("id", 147)
+					->orderby("message_level", "ASC")
+					->orderby("message_date", "DESC")
 					->limit(1)
 					->find_all();
 
@@ -214,13 +219,12 @@ class SocialMedia_Controller extends Admin_Controller {
 		//this is poor...
 		$message = ORM::factory("Socialmedia_Message")->find($message[0]->id);
 
-		$message->in_review = time();
 		$message->updateStatus(SocialMedia_Message_Model::STATUS_INREVIEW);
 
 		$this->template->content->message = $message;
 		$this->template->content->messages_left = ORM::factory("Socialmedia_Message")
-													->where("status", SocialMedia_Message_Model::STATUS_TOREVIEW)
-													->orwhere("status", SocialMedia_Message_Model::STATUS_INREVIEW)
+													->where("message_level", SocialMedia_Message_Model::STATUS_TOREVIEW)
+													->orwhere("message_level", SocialMedia_Message_Model::STATUS_INREVIEW)
 													->count_all();
 
 		$this->themes->js = new View('admin/messages/socialmedia/tool_js');

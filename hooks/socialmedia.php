@@ -40,6 +40,9 @@ class socialmedia {
 			Event::add('ushahidi_action.nav_admin_messages', array($this, '_messages'));
 		}
 
+		Event::add('ushahidi_action.report_edit', array("SocialMedia_Message_Model", "update_report_created"));
+
+
 		// TODO: Hook up incident ID to message once report is saved
 		//Event::add('ushahidi_action.report_edit', array($this, '_save_incident_id'));
 	}
