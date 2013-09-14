@@ -23,7 +23,7 @@
 					<!-- tabset -->
 					<ul class="tabset">
 							<li><a href="?tab=<?php echo SocialMedia_Message_Model::STATUS_TOREVIEW; ?>" <?php if ($tab == SocialMedia_Message_Model::STATUS_TOREVIEW) echo "class=\"active2\""; ?>><?php echo Kohana::lang('socialmedia.messages.to_review'); ?> (<?php echo $count_to_review; ?>)</a></li>
-							<li><a href="?tab=<?php echo SocialMedia_Message_Model::STATUS_POTENTIAL; ?>" <?php if ($tab == SocialMedia_Message_Model::STATUS_POTENTIAL) echo "class=\"active2\""; ?>><?php echo Kohana::lang('socialmedia.messages.potential_report'); ?> (<?php echo $count_potential; ?>)</a></li>
+							<li><a href="?tab=<?php echo SocialMedia_Message_Model::STATUS_POTENTIAL; ?>" <?php if ($tab == SocialMedia_Message_Model::STATUS_POTENTIAL) echo "class=\"active2\""; ?>><?php echo Kohana::lang('socialmedia.messages.potential_reports'); ?> (<?php echo $count_potential; ?>)</a></li>
 							<li><a href="?tab=<?php echo SocialMedia_Message_Model::STATUS_REPORTED; ?>" <?php if ($tab == SocialMedia_Message_Model::STATUS_REPORTED) echo "class=\"active2\""; ?>><?php echo Kohana::lang('socialmedia.messages.reported'); ?> (<?php echo $count_reported; ?>)</a></li>
 							<li><a href="?tab=<?php echo SocialMedia_Message_Model::STATUS_SPAM; ?>" <?php if ($tab == SocialMedia_Message_Model::STATUS_SPAM) echo "class=\"active2\""; ?>><?php echo Kohana::lang('ui_main.spam');?> (<?php echo $count_spam; ?>)</a></li>
 							<li><a href="?tab=<?php echo SocialMedia_Message_Model::STATUS_DISCARDED; ?>" <?php if ($tab == SocialMedia_Message_Model::STATUS_DISCARDED) echo "class=\"active2\""; ?>><?php echo Kohana::lang('socialmedia.messages.discarded');?> (<?php echo $count_discarded; ?>)</a></li>
@@ -114,9 +114,8 @@
 									<tr>
 										<td class="col-1"><input name="message_id[]" id="message_id" value="<?php echo $entry_id; ?>" type="checkbox" class="check-box"/></td>
 										<td class="col-2">
-											<div class="post">
-												<p><?php echo $entry_description; ?></p>
-											</div>
+											<p style="margin:0; padding-right: 20px;"><?php echo $entry_description; ?></p>
+
 											<ul class="info">
 												<li class="none-separator"><?php echo Kohana::lang('ui_main.from');?>: <strong><a href="<?php echo $entry_link; ?>" target="_blank"><?php echo $entry_from; ?></a></strong></li>
 											<?php if (! empty($entry->longitude) && !empty($entry->latitude)): ?>
@@ -128,7 +127,6 @@
 											</ul>
 
 											<?php if ($entry->Socialmedia_Asset->count() > 0): ?>
-												<p><strong><?php echo Kohana::lang('socialmedia.messages.assets.title'); ?></strong></p>
 												<p>
 													<?php foreach ($entry->Socialmedia_Asset as $media): ?>
 														<?php echo Kohana::lang('socialmedia.messages.assets.' . $media->type); ?>: 

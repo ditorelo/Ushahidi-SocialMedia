@@ -18,6 +18,10 @@ class Socialmedia_Message_Data_Model extends ORM
 {
 	protected $belongs_to = array('Socialmedia_Message');
 
+	// Constants
+	const STATUS_NORMAL 	= 0;
+	const STATUS_SPAM		= 10;
+	const STATUS_TRUSTED	= 100;
 
 	// Database table name
 	protected $table_name = 'socialmedia_messages_data';

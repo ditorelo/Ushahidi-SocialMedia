@@ -53,6 +53,8 @@ class S_Socialmedia_Controller extends Controller {
 		{
 			$dispatch->method("search", $config);
 		}
+
+		return true;
 	}
 
 }

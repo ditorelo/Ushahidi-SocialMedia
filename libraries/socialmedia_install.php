@@ -33,6 +33,8 @@ class Socialmedia_Install {
 		// Create the database tables
 		// Include the table_prefix
         $table_prefix = Kohana::config('database.default.table_prefix');
+
+        // messages table
 		$this->db->query("
                    CREATE TABLE `" . $table_prefix . self::TABLE_NAME . "_messages_data` (
 					`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +45,7 @@ class Socialmedia_Install {
 					KEY `message_id` (`message_id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Holds all socialmedia info crawled by subplugins';");
 
-
+		// settings table
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_settings` (
 						`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 						`setting` varchar(40) DEFAULT NULL,
@@ -52,6 +54,7 @@ class Socialmedia_Install {
 						UNIQUE KEY `setting_UNIQUE` (`setting`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
+		// keywords table
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_keywords` (
 					id int(11) unsigned NOT NULL AUTO_INCREMENT,
 					keyword varchar(40) DEFAULT NULL,
@@ -63,11 +66,12 @@ class Socialmedia_Install {
 					`id` int(11) NOT NULL AUTO_INCREMENT,
 					`author` varchar(255) NOT NULL,
 					`channel_id` varchar(255) NOT NULL,
-					`channel` varchar(20) DEFAULT NULL,
+  					`channel` varchar(20) NOT NULL,
+  					`status` int(11) NOT NULL,
 					PRIMARY KEY (`id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;");*/
 
-
+		// assets table
 		$this->db->query("CREATE TABLE `" . $table_prefix . self::TABLE_NAME . "_asset` (
 			`id` int(11) NOT NULL AUTO_INCREMENT,
 			`type` varchar(45) NOT NULL COMMENT 'Holds media type (url, picture, video)',
