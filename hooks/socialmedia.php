@@ -57,6 +57,15 @@ class socialmedia {
 	{
 		$this_sub_page = Event::$data;
 		echo ($this_sub_page == "socialmedia") ? "SocialMedia" : "<a href=\"".url::site()."admin/messages/socialmedia\">SocialMedia</a>";
+
+		// Nasty way of hiding the unwanted menu for the Social Media services
+		?>
+		<script>
+			$(document).ready(function() {
+				$("a:contains('SocialMedia ')", $(".bg", document.getElementById("content"))).remove();
+			});
+		</script>
+		<?php
 	}
 
 /*
