@@ -22,8 +22,6 @@ class S_Socialmedia_Controller extends Controller {
 
 	public function index()
 	{
-		$dispatch = Dispatch::controller("twitter", "");
-
 		$keywords = array();
 		$db_keywords = ORM::factory("socialmedia_keyword")->where("disabled", '0')->find_all();
 		foreach ($db_keywords as $k) {
@@ -49,12 +47,30 @@ class S_Socialmedia_Controller extends Controller {
 			null  //just tricking dispatch to pass this array using php's native function
 			);
 
-		if ($dispatch instanceof Dispatch && method_exists($dispatch,'method'))
+		$success = true;
+
+		$plugins = ORM::factory("Plugin")
+					->like("plugin_name", "socialmedia_")
+					->where("plugin_active", "1") 
+					->find_all();
+
+		foreach ($plugins as $plugin) 
 		{
-			$dispatch->method("search", $config);
+			$dispatch = Dispatch::controller($plugin->plugin_name, "");
+			if ($dispatch instanceof Dispatch && method_exists($dispatch,'method'))
+			{
+				try {
+					$dispatch->method("search", $config);
+				} 
+				catch (Exception $e)
+				{
+					var_dump($e->getMessage());
+					$success = false;
+				}
+			}
 		}
 
-		return true;
+		return $success;
 	}
 
 }
