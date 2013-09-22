@@ -21,7 +21,7 @@ class Socialmedia_Message_Model extends Message_Model
 	protected $has_many = array('Socialmedia_Asset', 'Socialmedia_Message_Data');
 
 	var $message_type = "1"; // Inbox, always
-
+	var $service_id = null;
 
 	// Database table name
 	//protected $table_name = 'socialmedia_message_metadata';
@@ -71,6 +71,10 @@ class Socialmedia_Message_Model extends Message_Model
 		return $this->service_id;
 	}
 
+	public function setServiceId($v) {
+		$this->service_id = $v;
+	}
+
 	public function getMessageDate() {
 		return $this->message_date;
 	}
@@ -109,16 +113,16 @@ class Socialmedia_Message_Model extends Message_Model
 		if (! $ignore_auto_spam_check) 
 		{
 			// Marking message as spam if author is spammer
-			if ($reporter->level_id == Socialmedia_Message_Model::STATUS_SPAM) 
+			if ($reporter->level_id == self::STATUS_SPAM) 
 			{
 				$this->message_level = self::STATUS_SPAM;
 			}
 		}
 
 		// bumps message status if author is trusted
-		if ($reporter->level_id == Socialmedia_Message_Model::STATUS_TRUSTED && $this->message_level == self::STATUS_TOREVIEW) 
+		if ($reporter->level_id == self::STATUS_TRUSTED && $this->message_level == self::STATUS_TOREVIEW) 
 		{
-			$this->message_level = Socialmedia_Message_Model::STATUS_POTENTIAL;
+			$this->message_level = self::STATUS_POTENTIAL;
 		}
 
 		//$this->addData("last_updated", time());
@@ -163,6 +167,10 @@ class Socialmedia_Message_Model extends Message_Model
 				$media->save();
 			}
 		}
+	}
+
+	public function setAuthor($id, $first, $last, $email) {
+		$this->reporter_id = self::getAuthor($this->service_id, $id, $first, $last, $email);
 	}
 
 	public function getData($name) {
