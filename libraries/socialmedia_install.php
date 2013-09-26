@@ -49,7 +49,7 @@ class Socialmedia_Install {
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_settings` (
 						`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 						`setting` varchar(40) DEFAULT NULL,
-						`value` varchar(400) DEFAULT NULL,
+						`value` TEXT DEFAULT NULL,
 						PRIMARY KEY (`id`),
 						UNIQUE KEY `setting_UNIQUE` (`setting`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
