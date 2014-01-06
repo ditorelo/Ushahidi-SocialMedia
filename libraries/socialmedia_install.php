@@ -36,7 +36,7 @@ class Socialmedia_Install {
 
         // messages table
 		$this->db->query("
-                   CREATE TABLE `" . $table_prefix . self::TABLE_NAME . "_messages_data` (
+                   CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_messages_data` (
 					`id` int(11) NOT NULL AUTO_INCREMENT,
 					`field_name` varchar(45) NOT NULL,
 					`value` text NOT NULL,
@@ -72,7 +72,7 @@ class Socialmedia_Install {
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;");*/
 
 		// assets table
-		$this->db->query("CREATE TABLE `" . $table_prefix . self::TABLE_NAME . "_asset` (
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . $table_prefix . self::TABLE_NAME . "_asset` (
 			`id` int(11) NOT NULL AUTO_INCREMENT,
 			`type` varchar(45) NOT NULL COMMENT 'Holds media type (url, picture, video)',
 			`url` text NOT NULL,

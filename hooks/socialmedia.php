@@ -35,7 +35,7 @@ class socialmedia {
 		}
 
 		// Messages menu
-		if (Router::$controller == 'messages' or Router::$controller == 'socialmedia')
+		if (Router::$controller == 'messages' or Router::$controller == 'socialmedia' or Router::$controller == 'tool' )
 		{
 			Event::add('ushahidi_action.nav_admin_messages', array($this, '_messages'));
 		}
@@ -55,6 +55,7 @@ class socialmedia {
 
 	public function _messages()
 	{
+
 		$this_sub_page = Event::$data;
 		echo ($this_sub_page == "socialmedia") ? "SocialMedia" : "<a href=\"".url::site()."admin/messages/socialmedia\">SocialMedia</a>";
 

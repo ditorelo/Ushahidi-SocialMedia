@@ -105,9 +105,10 @@
 								{
 									$entry_id = $entry->id;
 									$entry_link = $entry->getData("url");
+									$service = str_replace("SocialMedia ", "", $entry->reporter->service->service_name);
 									$entry_description = $entry->message_detail;
 									$entry_from = trim($entry->reporter->reporter_first . " " . $entry->reporter->reporter_last);
-									$entry_from .= " (" . $entry->reporter->reporter_email . ")";
+									$entry_from .= empty($entry->reporter->reporter_email) ? null : " (" . $entry->reporter->reporter_email . ")";
 									$entry_date = date('Y-m-d', strtotime($entry->message_date));
 									$incident_id = $entry->incident_id;
 									?>
@@ -117,7 +118,7 @@
 											<div class="post"><?php echo $entry_description; ?></div>
 
 											<ul class="info">
-												<li class="none-separator"><?php echo Kohana::lang('ui_main.from');?>: <strong><a href="<?php echo $entry_link; ?>" target="_blank"><?php echo $entry_from; ?></a></strong></li>
+												<li class="none-separator"><?php echo Kohana::lang('ui_main.from');?>: <?php echo $service; ?> - <strong><a href="<?php echo $entry_link; ?>" target="_blank"><?php echo $entry_from; ?></a></strong></li>
 											<?php if (! empty($entry->longitude) && !empty($entry->latitude)): ?>
 												<li><strong><?php echo Kohana::lang('socialmedia.messages.geotagged');?></strong></li>
 											<?php endif; ?>
@@ -136,7 +137,7 @@
 												<ul class="links">
 													<?php foreach ($entry->Socialmedia_Asset as $media): ?>
 														<li><?php echo Kohana::lang('socialmedia.messages.assets.' . $media->type); ?>: 
-														<a target="_blank" href="<?php echo $media->url; ?>"><?php echo $media->url; ?></li>
+														<a target="_blank" href="<?php echo $media->url; ?>"><?php echo $media->url; ?></a></li>
 													<?php endforeach; ?>
 												</ul>
 											<?php endif; ?>

@@ -11,7 +11,8 @@
 
 	<p style="font-size: 2em; max-width: 600px; line-height: 1.4em; margin-top: 0;"><?php echo $message->message_detail ?></p>
 
-	<p><?php echo Kohana::lang('ui_main.from');?>: <a href="<?php echo $message->getData("url"); ?>" target="_blank"><?php echo trim($message->reporter->reporter_first . " " . $message->reporter->reporter_last) . "(" . $message->reporter->reporter_email . ")" ?></a><br />
+	<p><?php echo Kohana::lang('ui_main.source');?>: <?php echo str_replace("SocialMedia ", "", $message->reporter->service->service_name); ?></br>
+	<?php echo Kohana::lang('ui_main.from');?>: <a href="<?php echo $message->getData("url"); ?>" target="_blank"><?php echo trim($message->reporter->reporter_first . " " . $message->reporter->reporter_last) . (empty($message->reporter->reporter_email) ? null : "(" . $message->reporter->reporter_email . ")"); ?></a><br />
 	<?php if ($message->reporter->level_id == SocialMedia_Message_Model::STATUS_TRUSTED): ?>
 		(<?php echo Kohana::lang('socialmedia.messages.trusted_reporter');?>)<br />
 	<?php elseif ($message->reporter->level_id == SocialMedia_Message_Model::STATUS_SPAM): ?>

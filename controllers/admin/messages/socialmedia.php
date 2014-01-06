@@ -94,6 +94,7 @@ class SocialMedia_Controller extends Admin_Controller {
 				->join("reporter", "reporter.id", "message.reporter_id")
 				->like("message_from", "SocialMedia")
 				->where($filter)
+				->where("`message_from` LIKE 'SocialMedia%'")
 				->count_all()
 		));
 
@@ -105,6 +106,7 @@ class SocialMedia_Controller extends Admin_Controller {
 			->join("reporter", "reporter.id", "message.reporter_id")
 			->like("message_from", "SocialMedia")
 			->where($filter)
+			->where("`message_from` LIKE 'SocialMedia%'")
 			->orderby('message_date','ASC')
 			->find_all($this->items_per_page, $pagination->sql_offset);
 
@@ -113,30 +115,35 @@ class SocialMedia_Controller extends Admin_Controller {
 		// Counts
 		$this->template->content->count_to_review = ORM::factory('Socialmedia_Message')
 				->where($review_filter)
+				->where("`message_from` LIKE 'SocialMedia%'")
 				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
 		$this->template->content->count_potential = ORM::factory('Socialmedia_Message')
 				->where("message_level", SocialMedia_Message_Model::STATUS_POTENTIAL)
+				->where("`message_from` LIKE 'SocialMedia%'")
 				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
 		$this->template->content->count_reported = ORM::factory('Socialmedia_Message')
 				->where("message_level", SocialMedia_Message_Model::STATUS_REPORTED)
+				->where("`message_from` LIKE 'SocialMedia%'")
 				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
 		$this->template->content->count_spam = ORM::factory('Socialmedia_Message')
 				->where("message_level", SocialMedia_Message_Model::STATUS_SPAM)
+				->where("`message_from` LIKE 'SocialMedia%'")
 				->like("message_from", "SocialMedia")
 				->count_all();
 
 		// Counts
 		$this->template->content->count_discarded = ORM::factory('Socialmedia_Message')
 				->where("message_level", SocialMedia_Message_Model::STATUS_DISCARDED)
+				->where("`message_from` LIKE 'SocialMedia%'")
 				->like("message_from", "SocialMedia")
 				->count_all();
 
@@ -203,8 +210,9 @@ class SocialMedia_Controller extends Admin_Controller {
 		$this->template->content = new View('admin/messages/socialmedia/tool');
 		$this->template->content->title = Kohana::lang('ui_admin.settings');
 
-		$filter = "`message_level` = " . SocialMedia_Message_Model::STATUS_TOREVIEW . " OR ";
-		$filter .= "`message_level` = " . SocialMedia_Message_Model::STATUS_INREVIEW;
+		$filter = "(`message_level` = " . SocialMedia_Message_Model::STATUS_TOREVIEW . " OR ";
+		$filter .= "`message_level` = " . SocialMedia_Message_Model::STATUS_INREVIEW . ") AND";
+		$filter .= "`message_from` LIKE 'SocialMedia%'";
 
 		$random_message = ORM::factory("SocialMedia_Message")
 					->where($filter)
@@ -223,8 +231,7 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		$this->template->content->message = $message;
 		$this->template->content->messages_left = ORM::factory("Socialmedia_Message")
-													->where("message_level", SocialMedia_Message_Model::STATUS_TOREVIEW)
-													->orwhere("message_level", SocialMedia_Message_Model::STATUS_INREVIEW)
+													->where($filter)
 													->count_all();
 
 		$this->themes->js = new View('admin/messages/socialmedia/tool_js');
