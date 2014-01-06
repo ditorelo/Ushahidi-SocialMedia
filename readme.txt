@@ -11,9 +11,14 @@ author website: github.com/ditorelo
 == Description ==
 This plugin will provide basic controllers, models and views to centralise social media crawling in Ushahidi.
 
-== Installation ==
+Current sub-plugins can be found at:
+https://github.com/ditorelo/Ushahidi-Twitter
+https://github.com/ditorelo/Ushahidi-Instagram
+https://github.com/ditorelo/Ushahidi-Facebook
+https://github.com/ditorelo/Ushahidi-Gplus
+
 == Installation ==
 1. Create a directory called "socialmedia" inside your /plugins/ directory
 2. Copy the entire all files directory into your /plugins/socialmedia directory.
 3. Activate the plugin.
-4. Go to configuration screen to set basic parameters and add keywords for crawling.
+4. Go to Settings > Social Media screen to set basic parameters and add keywords for crawling. Especific sub-plugin configuration will show up once sub-plugin is activated.
