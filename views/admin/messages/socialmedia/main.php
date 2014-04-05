@@ -109,7 +109,7 @@
 									$entry_description = $entry->message_detail;
 									$entry_from = trim($entry->reporter->reporter_first . " " . $entry->reporter->reporter_last);
 									$entry_from .= empty($entry->reporter->reporter_email) ? null : " (" . $entry->reporter->reporter_email . ")";
-									$entry_date = date('Y-m-d', strtotime($entry->message_date));
+									$entry_date = date('Y-m-d g:ia', strtotime($entry->message_date));
 									$incident_id = $entry->incident_id;
 									?>
 									<tr>
