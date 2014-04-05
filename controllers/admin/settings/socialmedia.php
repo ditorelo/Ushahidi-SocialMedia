@@ -48,6 +48,7 @@ class SocialMedia_Controller extends Admin_Controller {
 				socialmedia_helper::setSetting("longitude", (isset($post->longitude) ? $post->longitude : false));
 
 				socialmedia_helper::setSetting("order", (isset($post->order) ? $post->order : false));
+				socialmedia_helper::setSetting("show_images_on_listing", (!empty($post->show_images_on_listing) ? "1" : "0"));
 			}
 
 			$saved = true;
@@ -100,6 +101,7 @@ class SocialMedia_Controller extends Admin_Controller {
 		$this->template->content->enable_location = socialmedia_helper::getSetting("enable_location");
 		$this->template->content->start_date = socialmedia_helper::getSetting("start_date");
 		$this->template->content->radius = socialmedia_helper::getSetting("radius");
+		$this->template->content->show_images_on_listing = socialmedia_helper::getSetting("show_images_on_listing");
 
 
 

@@ -76,6 +76,11 @@
 							<?php print form::dropdown('order', $orders, $order); ?>
 							<div style="clear:both"></div>
 						</div>
+						<div class="row">
+							<h4><?php echo Kohana::lang('socialmedia.settings.images'); ?></h4>
+							<?php print form::checkbox('show_images_on_listing', "1", $show_images_on_listing); ?>
+							<div style="clear:both"></div>
+						</div>
 					</div>
                     <div class="r-column">
                                 <h4><?php echo Kohana::lang('socialmedia.settings.map_radius'); ?></h4>

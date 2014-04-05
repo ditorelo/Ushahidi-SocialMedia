@@ -7,7 +7,8 @@
 		'radius_label'				=> 'Radius',
 		'start_date'				=> 'Start Date',
 		'start_date_explanation'	=> 'In case the social media plataform supports a start date, the crawling will start from the date set above. Note that this setting won\'t apply if the system has already retrived data for a plataform',
-		'order'						=> 'Message order'
+		'order'						=> 'Message order',
+		'images'					=> 'Show images on listings'
 	),
 	'messages'	=> array(
 		'to_review'					=> 'Awaiting review',

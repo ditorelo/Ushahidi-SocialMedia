@@ -105,6 +105,8 @@ class SocialMedia_Controller extends Admin_Controller {
 
 		$this->template->content->pagination = $pagination;
 
+		$this->template->content->show_images = socialmedia_helper::getSetting("show_images_on_listing");
+
 		$this->template->content->total_items = $pagination->total_items;
 
 		$entries = ORM::factory('Socialmedia_Message')

@@ -136,8 +136,14 @@
 											<?php if ($entry->Socialmedia_Asset->count() > 0): ?>
 												<ul class="links">
 													<?php foreach ($entry->Socialmedia_Asset as $media): ?>
-														<li><?php echo Kohana::lang('socialmedia.messages.assets.' . $media->type); ?>: 
-														<a target="_blank" href="<?php echo $media->url; ?>"><?php echo $media->url; ?></a></li>
+														<li style="float:none;">
+														<?php if (empty($show_images) || $media->type != "photo"): ?>
+															<?php echo Kohana::lang('socialmedia.messages.assets.' . $media->type); ?>: 
+															<a target="_blank" href="<?php echo $media->url; ?>"><?php echo $media->url; ?></a>
+														<?php else: ?>
+															<a target="_blank" href="<?php echo $media->url; ?>"><img src="<?php echo $media->url; ?>" height="100"/></a>															
+														<?php endif; ?>													
+														</li>
 													<?php endforeach; ?>
 												</ul>
 											<?php endif; ?>
