@@ -199,4 +199,21 @@
 							</tbody>
 						</table>
 					</div>
+
+					<div class="tabs">
+					<div class="tab">
+						<ul>
+							<li><a href="#" onClick="socialMediaAction('d', '<?php echo utf8::strtoupper(Kohana::lang('socialmedia.messages.discarded'));?>', '')"><?php echo utf8::strtoupper(Kohana::lang('socialmedia.messages.discard'));?></a></li>
+							<li><a href="#" onClick="socialMediaAction('p', '<?php echo utf8::strtoupper(Kohana::lang('socialmedia.messages.potential_report'));?>', '')"><?php echo utf8::strtoupper(Kohana::lang('socialmedia.messages.potential_report'));?></a></li>
+
+						<?php if ($tab != SocialMedia_Message_Model::STATUS_SPAM) : ?>
+							<li><a href="#" onClick="socialMediaAction('s', '<?php echo utf8::strtoupper(Kohana::lang('ui_main.spam'));?>', '')"><?php echo utf8::strtoupper(Kohana::lang('ui_main.spam'));?></a></li>
+						<?php else: ?>
+							<li><a href="#" onClick="socialMediaAction('n', '<?php echo utf8::strtoupper(Kohana::lang('ui_main.not_spam'));?>', '')"><?php echo utf8::strtoupper(Kohana::lang('ui_main.not_spam'));?></a></li>
+						<?php endif; ?>
+
+						</ul>
+					</div>
+					</div>
+				</div>
 				<?php print form::close(); ?>
