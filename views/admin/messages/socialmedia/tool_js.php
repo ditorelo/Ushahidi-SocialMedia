@@ -12,6 +12,8 @@
  */
 	function showMap()
 	{
+
+		if (document.getElementById("socialmedia-map") == null) return;
 	
 		var map;
 		var thisLayer;

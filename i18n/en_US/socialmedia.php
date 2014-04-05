@@ -2,7 +2,7 @@
 	$lang = array(
 	'settings' => array(
 		'map_radius' 				=> 'Geolocation radius',
-		'map_radius_explanation' 	=> 'Some social media platforms allow requesting for messages within a certain geographic radius. You can see this here<br /><br />Please note that this might exclude updates that are not geotagged.',
+		'map_radius_explanation' 	=> 'Some social media platforms allow requesting for messages within a certain geographic radius (Currently only supported by Twitter). You can see this here.<br /><br />Please note that this might exclude updates that are not geotagged.',
 		'enable_location' 			=> 'Enable geobased search',
 		'radius_label'				=> 'Radius',
 		'start_date'				=> 'Start Date',
