@@ -85,6 +85,11 @@ class SocialMedia_Controller extends Admin_Controller {
 											: $review_filter;
 		$this->template->content->tab = $filter;
 
+		$order = socialmedia_helper::getSetting('order');
+		if (empty($order)) 
+		{
+			$order = "ASC";
+		}
 
 		// Pagination
 		$pagination = new Pagination(array(
@@ -105,7 +110,7 @@ class SocialMedia_Controller extends Admin_Controller {
 			->join("reporter", "reporter.id", "message.reporter_id")
 			->like("message_from", "SocialMedia")
 			->where($filter)
-			->orderby('message_date','ASC')
+			->orderby('message_date', $order)
 			->find_all($this->items_per_page, $pagination->sql_offset);
 
 		$this->template->content->entries = $entries;

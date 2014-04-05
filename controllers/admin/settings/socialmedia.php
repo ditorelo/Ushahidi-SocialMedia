@@ -46,6 +46,8 @@ class SocialMedia_Controller extends Admin_Controller {
 
 				socialmedia_helper::setSetting("latitude", (isset($post->latitude) ? $post->latitude : false));
 				socialmedia_helper::setSetting("longitude", (isset($post->longitude) ? $post->longitude : false));
+
+				socialmedia_helper::setSetting("order", (isset($post->order) ? $post->order : false));
 			}
 
 			$saved = true;
@@ -88,6 +90,12 @@ class SocialMedia_Controller extends Admin_Controller {
 		$this->template->content->latitude = $latitude;
 		$this->template->content->longitude = $longitude;
 		$this->template->content->radius_options = $radius_options;
+		$this->template->content->order = socialmedia_helper::getSetting('order');
+
+		$this->template->content->orders = array(
+				"DESC"	=> "Newer messages first",
+				"ASC"	=> "Older messages first"
+			);
 
 		$this->template->content->enable_location = socialmedia_helper::getSetting("enable_location");
 		$this->template->content->start_date = socialmedia_helper::getSetting("start_date");
